@@ -50,10 +50,11 @@
     <div id="results" class="card card-primary" style="display:none">
         <div class="card-header">
             <h3 class="card-title">Riepilogo</h3>
-            <ul>
-                <li></li>
-            </ul>
 
+        </div>
+        <div class="card-body">
+            <ul id="list">
+            </ul>
         </div>
 
     </div>
@@ -93,6 +94,7 @@
     function calcolaquoteAndrea(){
         var res = [0,0,0];
         $("#results").show();
+        $("#list").empty();
         var totale =  Number($("#bill").val());
         var tck50 =  Number($("#ticket50").val());
         var tck40 =  Number($("#ticket40").val());
@@ -103,25 +105,35 @@
 
         if (totale<=maxSpesaFree) {
             if (totale/paganti<=30) {
-                res=[totale/paganti,totale/paganti,totale/paganti];
+                res=[totale/paganti,totale/paganti,totale/paganti,0];
             }
             else if (totale/paganti<=40) {
                 totale = totale-30*tck30;
                 paganti = paganti-tck30;
-                res=[30,totale/paganti,totale/paganti];
+                res=[30,totale/paganti,totale/paganti,0];
             }
             else{
                 totale = totale-40*tck40-30*tck30;
                 paganti = paganti-tck30-tck40;
-                res=[30,40,totale/paganti];
+                res=[30,40,totale/paganti,0];
             }
         }
         else {
             var resto = totale - maxSpesaFree;
             res = [30, 40, 50, resto/nonPaganti];
         }
-        console.log(res);
-
+        if (tck30>=1) {
+            $("#list").append("<li>TICKET30 pagano "+res[0]+"</li>");
+        }
+        if (tck40>=1) {
+            $("#list").append("<li>TICKET40 pagano "+res[1]+"</li>");
+        }
+        if (tck50>=1) {
+            $("#list").append("<li>TICKET50 pagano "+res[2]+"</li>");
+        }
+        if (nonPaganti>=1) {
+            $("#list").append("<li>Gli scrocconi pagano "+res[3]+"</li>");
+        }
 
 
     }
