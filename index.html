@@ -7,9 +7,123 @@
 </head>
 
 <body>
-    <button type="button" class="btn btn-block btn-primary btn-lg" _msthash="5582213"
-        _msttexthash="115193">Primario</button>
+    <div class="card card-primary">
+        <div class="card-header">
+            <h3 class="card-title">Dati</h3>
+        </div>
+        <form>
+            <div class="card-body">
+                <div class="form-group">
+                    <label for="bill">Totale Conto</label>
+                    <div class="input-group">
+                        <div class="input-group-prepend">
+                            <span class="input-group-text">€</span>
+                        </div>
+                        <input type="number" id="bill" class="form-control">
+                        <div class="input-group-append">
+                            <span class="input-group-text">.00</span>
+                        </div>
+                    </div>
+                </div>
+                <div class="form-group">
+                    <label for="ticket50">Quanti con Ticket da 50?</label>
+                    <input type="number" class="form-control" id="ticket50" placeholder="0" value="0">
+                </div>
+                <div class="form-group">
+                    <label for="ticket41">Quanti con Ticket da 40?</label>
+                    <input type="number" class="form-control" id="ticket40" placeholder="0" value="0">
+                </div>
+                <div class="form-group">
+                    <label for="ticket31">Quanti con Ticket da 30?</label>
+                    <input type="number" class="form-control" id="ticket30" placeholder="0" value="0">
+                </div>
+                <div class="form-group">
+                    <label for="noticket">Quanti scroccano?</label>
+                    <input type="number" class="form-control" id="noticket" placeholder="0" value="0">
+                </div>
+                <button type="button" class="btn btn-block btn-primary btn-lg" onclick="calcolaquoteAndrea()">Calcola Quote</button>
+
+            </div>
+        </form>
+    </div>
+
+    <div id="results" class="card card-primary" style="display:none">
+        <div class="card-header">
+            <h3 class="card-title">Riepilogo</h3>
+            <ul>
+                <li></li>
+            </ul>
+
+        </div>
+
+    </div>
 </body>
 
 </html>
 <script src="dist/js/adminlte.js"></script>
+<script src="dist/js/jquery/jquery.js"></script>
+<script>
+    function calcolaquote(){
+        var res = [0,0,0];
+        $("#results").show();
+        var totale =  Number($("#bill").val());
+        var tck50 =  Number($("#ticket50").val());
+        console.log(tck50);
+        var tck40 =  Number($("#ticket40").val());
+        var tck30 =  Number($("#ticket30").val());
+        var nonPaganti =  Number($("#noticket").val());
+        maxSpesaFree= tck50*50+tck40*40+tck30*30;
+        console.log(maxSpesaFree);
+        paganti=tck50+tck40+tck30;
+
+        if (totale<=maxSpesaFree) {
+            var x = totale/maxSpesaFree;
+            res = [x*30, x*40, x*50];
+        }
+        else {
+            var resto = totale - maxSpesaFree;
+            var p = resto/ (paganti + nonPaganti);
+            res = [30+p, 40+p, 50+p, p];
+        }
+        console.log(res);
+
+
+
+    }
+    function calcolaquoteAndrea(){
+        var res = [0,0,0];
+        $("#results").show();
+        var totale =  Number($("#bill").val());
+        var tck50 =  Number($("#ticket50").val());
+        var tck40 =  Number($("#ticket40").val());
+        var tck30 =  Number($("#ticket30").val());
+        var nonPaganti =  Number($("#noticket").val());
+        maxSpesaFree= tck50*50+tck40*40+tck30*30;
+        paganti=tck50+tck40+tck30;
+
+        if (totale<=maxSpesaFree) {
+            if (totale/paganti<=30) {
+                res=[totale/paganti,totale/paganti,totale/paganti];
+            }
+            else if (totale/paganti<=40) {
+                totale = totale-30*tck30;
+                paganti = paganti-tck30;
+                res=[30,totale/paganti,totale/paganti];
+            }
+            else{
+                totale = totale-40*tck40-30*tck30;
+                paganti = paganti-tck30-tck40;
+                res=[30,40,totale/paganti];
+            }
+        }
+        else {
+            var resto = totale - maxSpesaFree;
+            res = [30, 40, 50, resto/nonPaganti];
+        }
+        console.log(res);
+
+
+
+    }
+
+</script>
